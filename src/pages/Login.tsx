@@ -1,4 +1,39 @@
 import React, { useState } from 'react'; // Ensure React is imported for JSX
+import { createClient } from '@supabase/supabase-js'
+import { Auth } from '@supabase/auth-ui-react'
+
+
+const supabase = createClient(
+    'https://lwnofgcqewihwdnmbxzr.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3bm9mZ2NxZXdpaHdkbm1ieHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NDExNDYsImV4cCI6MjA2MzExNzE0Nn0.y1fsN1Z48UZkaY1WfiOrWa2VDwYwH-5aXZ_Tas5qh38'
+)
+
+
+const customTheme = {
+    default: {
+        colors: {
+            textPrimary: '#3A3F47',
+            textSecondary: '#3A3F47',
+            brand: '#3A3F47',
+            brandHover: '#2c3036',
+            brandButtonText: 'white',
+            defaultButtonBackground: '#3A3F47',
+            defaultButtonBackgroundHover: '#2c3036',
+        },
+    },
+    dark: {
+        colors: {
+            brand: 'hsl(153 60.0% 53.0%)',
+            brandAccent: 'hsl(154 54.8% 45.1%)',
+            brandButtonText: 'white',
+            brandButtonBackground: '#3A3F47',
+            brandButtonBackgroundHover: '#2c3036',
+            defaultButtonBackground: '#ffffff',
+            defaultButtonBackgroundHover: '#f0f0f0',
+            //..
+        },
+    },
+}
 
 // Icon components (assuming these are correct as provided)
 const AppleIcon = () => (
@@ -21,6 +56,13 @@ const FacebookIcon = () => (
 interface LoginPageProps {
     handleLoginState: (isLoggedIn: boolean, userData?: any) => void; // Pass userData on successful login
     handleGuestLogin: () => void;
+}
+
+async function signInWithEmail() {
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: 'valid.email@supabase.io',
+        password: 'example-password',
+    })
 }
 
 function LoginPage({ handleLoginState, handleGuestLogin }: LoginPageProps) {
@@ -99,7 +141,8 @@ function LoginPage({ handleLoginState, handleGuestLogin }: LoginPageProps) {
                     console.log('Simulated API error during login.');
                 } else { // Simulate successful login
                     const simulatedUserData = { id: 'user123', email: email, name: 'Test User' };
-                    handleLoginState(true, simulatedUserData);
+                    await signInWithEmail();
+                    handleLoginState(true, simulatedUserData); // Simulate success
                 }
 
             } catch (error) {
@@ -135,6 +178,13 @@ function LoginPage({ handleLoginState, handleGuestLogin }: LoginPageProps) {
         <div className="min-h-screen bg-[#FFF0D4] flex flex-col items-center justify-center p-4 font-sans">
             <div className="w-full max-w-sm flex flex-col items-center">
                 <h1 className="text-4xl font-serif text-[#D9534F] mb-8">Recipe Planner</h1>
+                <Auth
+                    supabaseClient={supabase}
+                    appearance={{
+                        theme: customTheme
+                    }}
+                    providers={['google', 'facebook', 'twitter']}
+                />
 
                 {/* This box is ONLY for formErrors (API errors, general form messages) */}
                 {formErrors.length > 0 && (

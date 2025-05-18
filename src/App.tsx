@@ -6,6 +6,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isGuestLogin, setIsGuestLogin] = useState(false);
 
+  console.log("isLoggedIn", isLoggedIn);
+
   const handleLoginState = (state: boolean) => {
     setIsLoggedIn(state);
   }
